@@ -102,31 +102,9 @@ public class PanTadeusz {
                 .skip(1)
                 .map(c -> c.substring(1, c.length() - 2).replaceAll("\n+", "\n"))
                 .collect(toMap(
-                        c -> getKsiegaName(c),
-                        c -> getLengthWithoutTitles(c))
+                        this::getKsiegaName,
+                        this::getLengthWithoutTitles)
                 );
-    }
-
-    Map<String, Long> tytulOrazLiczbaWersowKazdejKsiegiPrzyZachowaniuKolejnosci2() throws IOException {
-        long start = System.currentTimeMillis();
-        record Wers(String ksiega, String wers) {
-        }
-        class Ksiega {
-            String tytul = "";
-        }
-        Ksiega ksiega = new Ksiega();
-        LinkedHashMap<String, Long> res = Files.lines(Path.of(path))
-                .dropWhile(l -> !l.trim().matches("^Księga [^u].*"))
-                .filter(not(String::isBlank))
-                .peek(l -> {
-                    if (l.matches("^Księga [^u].*")) {
-                        ksiega.tytul = l;
-                    }
-                })
-                .map(l -> new Wers(ksiega.tytul, l))
-                .collect(groupingBy(Wers::ksiega, LinkedHashMap::new, collectingAndThen(counting(), c -> c - 2)));
-        System.out.println("Execution time : [" + (System.currentTimeMillis() - start) + "ms]");
-        return res;
     }
 
     private String getKsiegaName(String c) {
