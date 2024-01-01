@@ -98,15 +98,13 @@ public class PanTadeusz {
         String file = Files.readString(Paths.get(path));
         List<String> chapters = List.of(pattern.split(file));
 
-        Map<String, Long> res = chapters.stream()
+        return chapters.stream()
                 .skip(1)
                 .map(c -> c.substring(1, c.length() - 2).replaceAll("\n+", "\n"))
                 .collect(toMap(
                         c -> getKsiegaName(c),
                         c -> getLengthWithoutTitles(c))
                 );
-
-        return res;
     }
 
     Map<String, Long> tytulOrazLiczbaWersowKazdejKsiegiPrzyZachowaniuKolejnosci2() throws IOException {
