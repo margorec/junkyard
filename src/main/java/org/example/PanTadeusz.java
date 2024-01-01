@@ -62,7 +62,7 @@ public class PanTadeusz {
                 findFirst().get();
     }
 
-    public Map<String, BigDecimal> procentWystapienSlowaTadeuszWPoszczegolnychFormachDo2mpp() {
+    public Map<String, BigDecimal> procentWystapienSlowaTadeuszWPoszczegolnychFormachDo2mpp() throws IOException {
         Map<String, Long> formsCounted = contentStream.
                 flatMap(breakToWords).
                 map(x -> x.replaceAll("[.—?:,!;»]", " ").trim()).
@@ -70,20 +70,21 @@ public class PanTadeusz {
                 collect(
                         Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        Long formsTotal = contentStream.
+        Long formsTotal = Files.lines(Paths.get(path)).
                 flatMap(breakToWords).
                 filter(x -> x.startsWith("Tadeusz")).
                 map(x -> x.replaceAll("[.—?:,!;»]", " ")).
                 count();
 
         Map<String, BigDecimal> result = new HashMap<>();
-        for (Map.Entry<String, Long> entry : formsCounted.entrySet()) {
-            result.put(entry.getKey(), new BigDecimal(entry.getValue().doubleValue() * 100 / formsTotal).setScale(2, RoundingMode.HALF_DOWN));
-        }
 
-        MapUtils.debugPrint(System.out, "result", result);
+        formsCounted.forEach((k,v) -> result.put(k, computePercent(v, formsTotal)));
 
         return result;
+    }
+
+    private BigDecimal computePercent(Long l, Long formsTotal) {
+        return new BigDecimal(l.doubleValue() * 100 / formsTotal).setScale(2, RoundingMode.HALF_DOWN);
     }
 
     public int sredniaLiczbaZnakowAlfabetycznychPrzypadajacychNaNiepustyWersWKsiedzeIV() {

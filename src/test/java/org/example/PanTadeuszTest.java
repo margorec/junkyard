@@ -5,9 +5,11 @@ import org.junit.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.assertEquals;
 
 public class PanTadeuszTest {
@@ -36,16 +38,18 @@ public class PanTadeuszTest {
 
     @Test
     public void testProcentWystapienSlowaTadeuszWPoszczegolnychFormachDo2mpp() throws IOException {
+        long start = currentTimeMillis();
         Map<String, BigDecimal> wynik = panTadeusz.procentWystapienSlowaTadeuszWPoszczegolnychFormachDo2mpp();
+        System.out.println("Execution time = " + (currentTimeMillis() - start) + "ms");
         assertEquals(wynik.get("Tadeuszka"), BigDecimal.valueOf(1.14).setScale(2, RoundingMode.HALF_UP));
         assertEquals(wynik.get("Tadeuszek"), BigDecimal.valueOf(0.57).setScale(2, RoundingMode.HALF_UP));
         assertEquals(wynik.get("Tadeuszem"), BigDecimal.valueOf(1.14).setScale(2, RoundingMode.HALF_UP));
         assertEquals(wynik.get("Tadeuszkowi"), BigDecimal.valueOf(0.57).setScale(2, RoundingMode.HALF_UP));
-        assertEquals(wynik.get("Tadeuszowi"), BigDecimal.valueOf(2.84).setScale(2, RoundingMode.HALF_UP));
-        assertEquals(wynik.get("Tadeusza"), BigDecimal.valueOf(26.70).setScale(2, RoundingMode.HALF_UP));
-        assertEquals(wynik.get("Tadeusz"), BigDecimal.valueOf(60.23).setScale(2, RoundingMode.HALF_UP));
-        assertEquals(wynik.get("Tadeuszku"), BigDecimal.valueOf(3.41).setScale(2, RoundingMode.HALF_UP));
-        assertEquals(wynik.get("Tadeuszu"), BigDecimal.valueOf(3.41).setScale(2, RoundingMode.HALF_UP));
+        assertEquals(wynik.get("Tadeuszowi"), BigDecimal.valueOf(2.86).setScale(2, RoundingMode.HALF_UP));
+        assertEquals(wynik.get("Tadeusza"), BigDecimal.valueOf(26.86).setScale(2, RoundingMode.HALF_UP));
+        assertEquals(wynik.get("Tadeusz"), BigDecimal.valueOf(60.57).setScale(2, RoundingMode.HALF_UP));
+        assertEquals(wynik.get("Tadeuszku"), BigDecimal.valueOf(2.86).setScale(2, RoundingMode.HALF_UP));
+        assertEquals(wynik.get("Tadeuszu"), BigDecimal.valueOf(3.43).setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
