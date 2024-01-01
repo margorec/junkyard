@@ -83,9 +83,9 @@ public class PanTadeusz {
         var res = contentStream.
                 dropWhile(line -> !line.contains("Księga czwarta")).
                 takeWhile(line -> !line.contains("Księga piąta")).
-                filter(line -> line.trim().length() > 0).
-                map(line -> line.replaceAll("[.—?:,!;»\\s+]", "").trim()).
-                mapToDouble(line -> line.length()).
+                filter(line -> !line.isEmpty()).
+                map(line -> line.replaceAll("[.—?:,!;»\\s+]", "")).
+                mapToDouble(String::length).
                 average().
                 getAsDouble();
 
