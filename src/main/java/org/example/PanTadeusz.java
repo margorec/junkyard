@@ -25,7 +25,7 @@ public class PanTadeusz {
 
     public PanTadeusz() {
         try {
-            contentStream = Files.lines(Paths.get(path));
+            contentStream = Files.lines(Paths.get(path)).map(x -> x.replaceAll("[.—?:,!;»]", " "));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -34,7 +34,7 @@ public class PanTadeusz {
     public long liczbaWystapienSlowaTadeuszWDowolnejFormie() {
         return contentStream.
                 flatMap(breakToWords).
-                map(x -> x.trim()).
+                map(String::trim).
                 filter(x -> x.contains("Tadeu")).
                 count();
     }
@@ -55,7 +55,6 @@ public class PanTadeusz {
     public String drugeNajdluzszeSlowoWCalymUtworze() {
         return contentStream.
                 flatMap(breakToWords).
-                map(x -> x.replaceAll("[.—?:,!;»]", " ")).
                 distinct().
                 sorted(Comparator.comparing(String::length).reversed()).
                 skip(1).
@@ -63,24 +62,18 @@ public class PanTadeusz {
     }
 
     public Map<String, BigDecimal> procentWystapienSlowaTadeuszWPoszczegolnychFormachDo2mpp() throws IOException {
-        Map<String, Long> formsCounted = contentStream.
-                flatMap(breakToWords).
-                map(x -> x.replaceAll("[.—?:,!;»]", " ").trim()).
-                filter(x -> x.startsWith("Tadeusz")).
-                collect(
-                        Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         Long formsTotal = Files.lines(Paths.get(path)).
                 flatMap(breakToWords).
                 filter(x -> x.startsWith("Tadeusz")).
-                map(x -> x.replaceAll("[.—?:,!;»]", " ")).
                 count();
 
-        Map<String, BigDecimal> result = new HashMap<>();
+       return contentStream.
+                flatMap(breakToWords).
+                filter(x -> x.startsWith("Tadeusz")).
 
-        formsCounted.forEach((k,v) -> result.put(k, computePercent(v, formsTotal)));
-
-        return result;
+                collect(
+                        Collectors.groupingBy(Function.identity(), Collectors.collectingAndThen(Collectors.counting(), val -> computePercent(val, formsTotal))));
     }
 
     private BigDecimal computePercent(Long l, Long formsTotal) {
