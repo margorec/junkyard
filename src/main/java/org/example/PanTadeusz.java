@@ -4,17 +4,18 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toMap;
 
 public class PanTadeusz {
 
@@ -44,7 +45,7 @@ public class PanTadeusz {
         return contentStream.
                 flatMap(breakToWords).
                 filter(x -> x.startsWith("Tadeusz")).
-                map(x -> x.replaceAll("[.—?:,!;»]", " ")).
+            //    map(x -> x.replaceAll("[.—?:,!;»]", " ")).
                 distinct().
                 count();
     }
@@ -62,7 +63,7 @@ public class PanTadeusz {
                 findFirst().get();
     }
 
-    public Map<String, BigDecimal> procentWystapienSlowaTadeuszWPoszczegolnychFormachDo2mpp() throws IOException {
+    public Map<String, BigDecimal> procentWystapienSlowaTadeuszWPoszczegolnychFormachDo2mpp() {
 
         AtomicInteger total = new AtomicInteger(0);
 
@@ -113,6 +114,6 @@ public class PanTadeusz {
     }
 
     private Long getLengthWithoutTitles(String c) {
-        return Long.valueOf(c.replaceAll("\n+", "\n").split("\n").length - 2);
+        return (long) (c.replaceAll("\n+", "\n").split("\n").length - 2);
     }
 }

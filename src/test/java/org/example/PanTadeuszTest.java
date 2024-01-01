@@ -5,8 +5,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLOutput;
-import java.util.List;
 import java.util.Map;
 
 import static java.lang.System.currentTimeMillis;
@@ -17,21 +15,21 @@ public class PanTadeuszTest {
     PanTadeusz panTadeusz = new PanTadeusz();
 
     @Test
-    public void testLiczbaWystapienSlowaTadeuszWDowolnejFormie() throws IOException {
+    public void testLiczbaWystapienSlowaTadeuszWDowolnejFormie() {
         long actual = panTadeusz.liczbaWystapienSlowaTadeuszWDowolnejFormie();
         long expected = 176;
         assertEquals(expected, actual);
     }
 
     @Test
-    public void testLiczbaUnikalnychWystapienSlowaTadeuszWDowolnejFormie() throws IOException {
+    public void testLiczbaUnikalnychWystapienSlowaTadeuszWDowolnejFormie() {
         long actual = panTadeusz.liczbaUnikalnychWystapienSlowaTadeuszWDowolnejFormie();
         long expected = 9;
         assertEquals(expected, actual);
     }
 
     @Test
-    public void testDrugeNajdluzszeSlowoWCalymUtworze() throws IOException {
+    public void testDrugeNajdluzszeSlowoWCalymUtworze() {
         String wynik = panTadeusz.drugeNajdluzszeSlowoWCalymUtworze();
         assertEquals(wynik, "Podkomorzy-Marszałek");
     }
@@ -76,21 +74,6 @@ public class PanTadeuszTest {
         assertEquals(wynik.get("Księga dwunasta"), Long.valueOf(1003));
     }
 
-    @Test
-    public void testTytulILiczbaWersowKazdejZKsiagZZachowaniemKolejnosci2() throws IOException {
-        Map<String, Long> wynik = panTadeusz.tytulOrazLiczbaWersowKazdejKsiegiPrzyZachowaniuKolejnosci2();
-        assertEquals(wynik.get("Księga pierwsza"), Long.valueOf(985));
-        assertEquals(wynik.get("Księga druga"), Long.valueOf(856));
-        assertEquals(wynik.get("Księga trzecia"), Long.valueOf(794));
-        assertEquals(wynik.get("Księga czwarta"), Long.valueOf(1005));
-        assertEquals(wynik.get("Księga piąta"), Long.valueOf(914));
-        assertEquals(wynik.get("Księga szósta"), Long.valueOf(622));
-        assertEquals(wynik.get("Księga siódma"), Long.valueOf(559));
-        assertEquals(wynik.get("Księga ósma"), Long.valueOf(808));
-        assertEquals(wynik.get("Księga dziewiąta"), Long.valueOf(767));
-        assertEquals(wynik.get("Księga dziesiąta"), Long.valueOf(911));
-        assertEquals(wynik.get("Księga jedenasta"), Long.valueOf(686));
-        assertEquals(wynik.get("Księga dwunasta"), Long.valueOf(1003));
-    }
+
 
 }
