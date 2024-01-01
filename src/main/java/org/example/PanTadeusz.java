@@ -1,7 +1,5 @@
 package org.example;
 
-import org.apache.commons.collections.MapUtils;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -20,6 +19,8 @@ import static java.util.stream.Collectors.*;
 public class PanTadeusz {
 
     private final Stream<String> contentStream;
+
+    public static final BigDecimal ONE_HUNDRED = new BigDecimal(100);
 
     private static final String path = ("src/pantadeusz.txt");
 
@@ -63,21 +64,19 @@ public class PanTadeusz {
 
     public Map<String, BigDecimal> procentWystapienSlowaTadeuszWPoszczegolnychFormachDo2mpp() throws IOException {
 
-        Long formsTotal = Files.lines(Paths.get(path)).
+        AtomicInteger total = new AtomicInteger(0);
+
+        return contentStream.
                 flatMap(breakToWords).
                 filter(x -> x.startsWith("Tadeusz")).
-                count();
-
-       return contentStream.
-                flatMap(breakToWords).
-                filter(x -> x.startsWith("Tadeusz")).
-
+                peek(x -> total.getAndIncrement()).
                 collect(
-                        Collectors.groupingBy(Function.identity(), Collectors.collectingAndThen(Collectors.counting(), val -> computePercent(val, formsTotal))));
+                        Collectors.groupingBy(Function.identity(),
+                                Collectors.collectingAndThen(Collectors.counting(), val -> computePercent(val, total.longValue()))));
     }
 
     private BigDecimal computePercent(Long l, Long formsTotal) {
-        return new BigDecimal(l.doubleValue() * 100 / formsTotal).setScale(2, RoundingMode.HALF_DOWN);
+        return BigDecimal.valueOf(l.doubleValue() / formsTotal).multiply(ONE_HUNDRED).setScale(2, RoundingMode.HALF_DOWN);
     }
 
     public int sredniaLiczbaZnakowAlfabetycznychPrzypadajacychNaNiepustyWersWKsiedzeIV() {
@@ -103,7 +102,7 @@ public class PanTadeusz {
                 .skip(1)
                 .map(c -> c.substring(1, c.length() - 2).replaceAll("\n+", "\n"))
                 .collect(toMap(
-                        c -> getKsiegaName(c) ,
+                        c -> getKsiegaName(c),
                         c -> getLengthWithoutTitles(c))
                 );
 
@@ -112,8 +111,11 @@ public class PanTadeusz {
 
     Map<String, Long> tytulOrazLiczbaWersowKazdejKsiegiPrzyZachowaniuKolejnosci2() throws IOException {
         long start = System.currentTimeMillis();
-        record Wers(String ksiega, String wers) {}
-        class Ksiega { String tytul = ""; }
+        record Wers(String ksiega, String wers) {
+        }
+        class Ksiega {
+            String tytul = "";
+        }
         Ksiega ksiega = new Ksiega();
         LinkedHashMap<String, Long> res = Files.lines(Path.of(path))
                 .dropWhile(l -> !l.trim().matches("^Księga [^u].*"))
