@@ -30,13 +30,14 @@ public class InterviewTask1 {
                 }).collect(Collectors.toList());
 
         // 3. Group collection of Persons by gender (K is for female, M is for male)
-        Map<String, List<Person>> groupedByGender = peopleList.stream().
+        Map<String, List<Person>> groupedByGender =
+                peopleList.stream().
                 collect(Collectors.groupingBy(p -> p.getGender()));
 
         Map<String, Double> groupedByGender1 = peopleList.stream().
                 collect(Collectors.groupingBy(Person::getGender, Collectors.averagingDouble(Person::getAge)));
 
-
+        System.out.println(groupedByGender);
         System.out.println(groupedByGender1);
     }
 
